@@ -1,41 +1,209 @@
-# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+# ====================================
+# 🔐 ENVIRONMENT VARIABLES & SECRETS
+# ====================================
+# Never commit environment files!
+.env
+.env*.local
+.env.development
+.env.production
+.env.test
+.env.staging
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
 
-# dependencies
-/node_modules
-/.pnp
-.pnp.*
-.yarn/*
-!.yarn/patches
-!.yarn/plugins
-!.yarn/releases
-!.yarn/versions
-
-# testing
-/coverage
-
-# next.js
-/.next/
-/out/
-
-# production
-/build
-
-# misc
-.DS_Store
-*.pem
-
-# debug
+# ====================================
+# 📦 DEPENDENCIES
+# ====================================
+# Node modules directory
+node_modules/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-.pnpm-debug.log*
+pnpm-debug.log*
+lerna-debug.log*
 
-# env files (can opt-in for committing if needed)
-.env*
+# Package manager lock files (keep one, ignore others if switching)
+# yarn.lock
+# pnpm-lock.yaml
+# package-lock.json
 
-# vercel
+# ====================================
+# 🎯 NEXT.JS SPECIFIC
+# ====================================
+# Next.js build output
+.next/
+out/
+build/
+dist/
+
+# Next.js cache
+.next/cache/
+
+# Static generation
 .vercel
 
-# typescript
+# ====================================
+# 🗄️ DRIZZLE ORM & DATABASE
+# ====================================
+# Drizzle migrations (if you want to ignore - usually you commit these)
+# drizzle/
+
+# Local SQLite databases (if used for dev)
+*.db
+*.db-journal
+*.sqlite
+*.sqlite3
+
+# PostgreSQL local data
+postgres-data/
+pgdata/
+
+# Database dumps
+*.sql
+*.dump
+
+# ====================================
+# 🔧 DEVELOPMENT & DEBUGGING
+# ====================================
+# TypeScript
 *.tsbuildinfo
 next-env.d.ts
+
+# Testing
+coverage/
+.nyc_output/
+*.lcov
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Runtime data
+pids/
+*.pid
+*.seed
+*.pid.lock
+
+# ====================================
+# 💻 IDE & EDITOR CONFIGS
+# ====================================
+# VS Code
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+
+# JetBrains IDEs (WebStorm, IntelliJ, etc.)
+.idea/
+*.iml
+*.iws
+*.ipr
+
+# Sublime Text
+*.sublime-project
+*.sublime-workspace
+
+# Vim
+*.swp
+*.swo
+*~
+
+# Emacs
+*~
+\#*\#
+.\#*
+
+# ====================================
+# 🖥️ OPERATING SYSTEM FILES
+# ====================================
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon
+._*
+.Spotlight-V100
+.Trashes
+
+# Windows
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
+*.stackdump
+[Dd]esktop.ini
+$RECYCLE.BIN/
+
+# Linux
+.directory
+.Trash-*
+.nfs*
+
+# ====================================
+# 🚀 DEPLOYMENT & CI/CD
+# ====================================
+.vercel
+.netlify
+.firebase
+
+# Docker
+docker-compose.override.yml
+
+# ====================================
+# 🎨 SHADCN & UI COMPONENTS
+# ====================================
+# Usually shadcn components are committed, but if you have temp files:
+components/ui/.temp
+
+# ====================================
+# 📊 MISC
+# ====================================
+# Optional npm cache directory
+.npm
+
+# Optional eslint cache
+.eslintcache
+
+# Optional stylelint cache
+.stylelintcache
+
+# Microbundle cache
+.rpt2_cache/
+.rts2_cache_cjs/
+.rts2_cache_es/
+.rts2_cache_umd/
+
+# Optional REPL history
+.node_repl_history
+
+# Yarn Integrity file
+.yarn-integrity
+
+# Temporary folders
+tmp/
+temp/
+
+# Storybook
+storybook-static/
+
+# Turbopack (if using Next.js 14+)
+.turbo/
+
+# Sentry
+.sentryclirc
+
+# ====================================
+# 🔒 BETTERAUTH SPECIFIC
+# ====================================
+# Any auth-related secrets or keys
+auth-secrets.json
+*.pem
+*.key
