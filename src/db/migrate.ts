@@ -43,7 +43,13 @@ async function runMigrations() {
 
     process.stdout.write("✅ Migrations completed successfully!\n");
   } catch (error) {
-    process.stderr.write(`❌ Migration failed: ${error}\n`);
+    process.stderr.write(
+      `❌ Migration failed: ${error}\n` +
+      "Common causes:\n" +
+      "  - Check that your DATABASE_URL is correct and set in your environment.\n" +
+      "  - Ensure that your PostgreSQL server is running and accessible.\n" +
+      "  - Verify network connectivity to the database.\n"
+    );
     process.exit(1);
   } finally {
     await migrationClient.end();
