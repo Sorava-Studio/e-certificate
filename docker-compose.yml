@@ -1,0 +1,117 @@
+# ============================================
+# 🐳 E-CERTIFICATE - DOCKER COMPOSE
+# ============================================
+# Development environment setup for PostgreSQL
+#
+# Quick Start:
+#   docker compose up -d          # Start in background
+#   docker compose down           # Stop containers
+#   docker compose logs -f        # View logs
+#   docker compose ps             # Check status
+#
+# Stack: PostgreSQL 17 (Alpine)
+# ============================================
+
+services:
+  # ============================================
+  # 🗄️  PostgreSQL Database
+  # ============================================
+  postgres:
+    image: postgres:17-alpine
+    container_name: ecertificate-postgres
+    restart: unless-stopped
+
+    # Environment variables (sync with .env.local)
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+      POSTGRES_DB: ${POSTGRES_DB:-ecertificate}
+      # Performance tuning for development
+      POSTGRES_INITDB_ARGS: "-E UTF8 --locale=en_US.utf8"
+
+    # Port mapping (host:container)
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+
+    # Persistent data storage
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      # Optional: Custom initialization scripts
+      # - ./scripts/init-db.sql:/docker-entrypoint-initdb.d/init.sql
+
+    # Health check
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "pg_isready -U ${POSTGRES_USER:-postgres} -d ${POSTGRES_DB:-ecertificate}",
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+    # Resource limits (optional, adjust as needed)
+    deploy:
+      resources:
+        limits:
+          cpus: "2"
+          memory: 2G
+        reservations:
+          cpus: "1"
+          memory: 512M
+
+    # Network configuration
+    networks:
+      - ecertificate-network
+
+# ============================================
+# 📦 VOLUMES
+# ============================================
+# Persistent data storage for database
+volumes:
+  postgres_data:
+    name: ${POSTGRES_DOCKER_VOLUME:-ecertificate_db_data}
+    driver: local
+
+# ============================================
+# 🌐 NETWORKS
+# ============================================
+# Isolated network for service communication
+networks:
+  ecertificate-network:
+    name: ecertificate-network
+    driver: bridge
+# ============================================
+# 📝 USAGE NOTES
+# ============================================
+#
+# 🚀 Common Commands:
+#   docker compose up -d              # Start all services
+#   docker compose down               # Stop all services
+#   docker compose down -v            # Stop and remove volumes (⚠️ deletes data!)
+#   docker compose logs postgres -f   # View PostgreSQL logs
+#   docker compose ps                 # List running services
+#   docker compose restart postgres   # Restart PostgreSQL
+#   docker compose exec postgres psql -U postgres -d ecertificate  # Connect to DB
+#
+# 🔧 Database Management:
+#   # Backup database
+#   docker compose exec postgres pg_dump -U postgres ecertificate > backup.sql
+#
+#   # Restore database
+#   docker compose exec -T postgres psql -U postgres ecertificate < backup.sql
+#
+#   # Connect via psql
+#   docker compose exec postgres psql -U postgres -d ecertificate
+#
+#  Connection String:
+#   DATABASE_URL=postgresql://postgres:postgres@localhost:5432/ecertificate
+#
+# ⚙️  Environment Variables:
+#   Customize via .env.local or export in terminal:
+#   export POSTGRES_USER=myuser
+#   export POSTGRES_PASSWORD=mypassword
+#   export POSTGRES_DB=mydatabase
+#
+# ============================================
