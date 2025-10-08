@@ -23,11 +23,17 @@ yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
+bun-debug.log*
+
+# Bun specific
+.bun/
+bun.lockb.tmp
 
 # Package manager lock files (keep one, ignore others if switching)
 # yarn.lock
 # pnpm-lock.yaml
 # package-lock.json
+bun.lock
 
 # ====================================
 # 🎯 NEXT.JS SPECIFIC
@@ -168,6 +174,9 @@ components/ui/.temp
 # ====================================
 # Optional npm cache directory
 .npm
+
+# Bun cache
+.bun-cache/
 
 # Optional eslint cache
 .eslintcache
