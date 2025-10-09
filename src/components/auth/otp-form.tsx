@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import {
@@ -59,23 +60,25 @@ export function OTPForm({ className, ...props }: React.ComponentProps<"div">) {
               <Field>
                 <Button type="submit">Verify</Button>
                 <FieldDescription className="text-center">
-                  Didn&apos;t receive the code? <a href="#">Resend</a>
+                  Didn&apos;t receive the code? <a href="#resend">Resend</a>
                 </FieldDescription>
               </Field>
             </FieldGroup>
           </form>
           <div className="relative hidden bg-muted md:block">
-            <img
-              alt="Image"
-              className="absolute inset-0 h-full w-full object-cover dark:brightness-[0.2] dark:grayscale"
-              src="/placeholder.svg"
+            <Image
+              alt="OTP verification background"
+              className="object-cover dark:brightness-[0.2] dark:grayscale"
+              fill
+              src="/register.jpg"
             />
           </div>
         </CardContent>
       </Card>
       <FieldDescription className="text-center">
-        By clicking continue, you agree to our <a href="#">Terms of Service</a>{" "}
-        and <a href="#">Privacy Policy</a>.
+        By clicking continue, you agree to our{" "}
+        <a href="#terms">Terms of Service</a> and{" "}
+        <a href="#privacy">Privacy Policy</a>.
       </FieldDescription>
     </div>
   );
