@@ -44,72 +44,118 @@
 }
 
 :root {
+  /* Luxury Brand - Emerald Green Theme */
   --radius: 0.625rem;
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
+
+  /* Base Colors - Warm cream backgrounds for luxury feel */
+  --background: oklch(0.99 0.005 85);
+  --foreground: oklch(0.15 0.01 150);
+
+  /* Cards - Slight warmth */
   --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
+  --card-foreground: oklch(0.15 0.01 150);
+
+  /* Popovers */
   --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
-  --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
-  --chart-1: oklch(0.646 0.222 41.116);
-  --chart-2: oklch(0.6 0.118 184.704);
-  --chart-3: oklch(0.398 0.07 227.392);
-  --chart-4: oklch(0.828 0.189 84.429);
-  --chart-5: oklch(0.769 0.188 70.08);
-  --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: oklch(0.205 0 0);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.97 0 0);
-  --sidebar-accent-foreground: oklch(0.205 0 0);
-  --sidebar-border: oklch(0.922 0 0);
-  --sidebar-ring: oklch(0.708 0 0);
+  --popover-foreground: oklch(0.15 0.01 150);
+
+  /* Primary - Deep Emerald Green (luxury green) */
+  --primary: oklch(0.42 0.14 155);
+  --primary-foreground: oklch(0.99 0.005 85);
+
+  /* Secondary - Gold accent for luxury */
+  --secondary: oklch(0.95 0.02 90);
+  --secondary-foreground: oklch(0.25 0.08 155);
+
+  /* Muted - Soft sage tones */
+  --muted: oklch(0.96 0.01 140);
+  --muted-foreground: oklch(0.5 0.03 155);
+
+  /* Accent - Rich forest green */
+  --accent: oklch(0.88 0.04 150);
+  --accent-foreground: oklch(0.25 0.08 155);
+
+  /* Destructive - Refined burgundy red */
+  --destructive: oklch(0.55 0.18 25);
+
+  /* Borders - Subtle green-tinted */
+  --border: oklch(0.9 0.01 140);
+  --input: oklch(0.9 0.01 140);
+  --ring: oklch(0.42 0.14 155);
+
+  /* Charts - Luxury color palette */
+  --chart-1: oklch(0.42 0.14 155); /* Emerald */
+  --chart-2: oklch(0.65 0.15 85); /* Gold */
+  --chart-3: oklch(0.35 0.12 180); /* Deep teal */
+  --chart-4: oklch(0.55 0.08 140); /* Sage */
+  --chart-5: oklch(0.45 0.1 30); /* Terracotta */
+
+  /* Sidebar - Premium dark green */
+  --sidebar: oklch(0.98 0.005 140);
+  --sidebar-foreground: oklch(0.25 0.08 155);
+  --sidebar-primary: oklch(0.42 0.14 155);
+  --sidebar-primary-foreground: oklch(0.99 0.005 85);
+  --sidebar-accent: oklch(0.92 0.02 140);
+  --sidebar-accent-foreground: oklch(0.25 0.08 155);
+  --sidebar-border: oklch(0.88 0.02 140);
+  --sidebar-ring: oklch(0.42 0.14 155);
 }
 
 .dark {
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.205 0 0);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.205 0 0);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.922 0 0);
-  --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.269 0 0);
-  --accent-foreground: oklch(0.985 0 0);
-  --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.556 0 0);
-  --chart-1: oklch(0.488 0.243 264.376);
-  --chart-2: oklch(0.696 0.17 162.48);
-  --chart-3: oklch(0.769 0.188 70.08);
-  --chart-4: oklch(0.627 0.265 303.9);
-  --chart-5: oklch(0.645 0.246 16.439);
-  --sidebar: oklch(0.205 0 0);
-  --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.269 0 0);
-  --sidebar-accent-foreground: oklch(0.985 0 0);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.556 0 0);
+  /* Dark Mode - Luxury Green Theme */
+
+  /* Base - Deep charcoal with subtle green undertone */
+  --background: oklch(0.16 0.01 155);
+  --foreground: oklch(0.98 0.005 140);
+
+  /* Cards - Slightly elevated */
+  --card: oklch(0.2 0.015 155);
+  --card-foreground: oklch(0.98 0.005 140);
+
+  /* Popovers */
+  --popover: oklch(0.2 0.015 155);
+  --popover-foreground: oklch(0.98 0.005 140);
+
+  /* Primary - Bright emerald for dark mode */
+  --primary: oklch(0.65 0.16 155);
+  --primary-foreground: oklch(0.16 0.01 155);
+
+  /* Secondary - Muted gold */
+  --secondary: oklch(0.25 0.02 90);
+  --secondary-foreground: oklch(0.92 0.02 140);
+
+  /* Muted */
+  --muted: oklch(0.25 0.015 155);
+  --muted-foreground: oklch(0.65 0.03 140);
+
+  /* Accent - Vibrant sage */
+  --accent: oklch(0.28 0.03 150);
+  --accent-foreground: oklch(0.92 0.02 140);
+
+  /* Destructive - Softer red for dark mode */
+  --destructive: oklch(0.62 0.2 25);
+
+  /* Borders - Subtle with opacity */
+  --border: oklch(0.9 0.01 140 / 12%);
+  --input: oklch(0.9 0.01 140 / 18%);
+  --ring: oklch(0.65 0.16 155);
+
+  /* Charts - Adjusted for dark mode */
+  --chart-1: oklch(0.65 0.16 155); /* Bright emerald */
+  --chart-2: oklch(0.72 0.15 85); /* Bright gold */
+  --chart-3: oklch(0.55 0.14 180); /* Bright teal */
+  --chart-4: oklch(0.68 0.1 140); /* Light sage */
+  --chart-5: oklch(0.62 0.12 30); /* Coral */
+
+  /* Sidebar - Deep luxury green */
+  --sidebar: oklch(0.18 0.015 155);
+  --sidebar-foreground: oklch(0.92 0.02 140);
+  --sidebar-primary: oklch(0.65 0.16 155);
+  --sidebar-primary-foreground: oklch(0.16 0.01 155);
+  --sidebar-accent: oklch(0.25 0.02 150);
+  --sidebar-accent-foreground: oklch(0.92 0.02 140);
+  --sidebar-border: oklch(0.9 0.01 140 / 12%);
+  --sidebar-ring: oklch(0.65 0.16 155);
 }
 
 @layer base {
@@ -118,5 +164,88 @@
   }
   body {
     @apply bg-background text-foreground;
+  }
+
+  /* Typography Styles */
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply font-semibold tracking-tight;
+  }
+
+  h1 {
+    @apply text-4xl md:text-5xl lg:text-6xl;
+  }
+
+  h2 {
+    @apply text-3xl md:text-4xl lg:text-5xl;
+  }
+
+  h3 {
+    @apply text-2xl md:text-3xl lg:text-4xl;
+  }
+
+  h4 {
+    @apply text-xl md:text-2xl lg:text-3xl;
+  }
+
+  h5 {
+    @apply text-lg md:text-xl lg:text-2xl;
+  }
+
+  h6 {
+    @apply text-base md:text-lg lg:text-xl;
+  }
+
+  p {
+    @apply leading-7;
+  }
+
+  blockquote {
+    @apply border-l-4 border-border pl-4 italic text-muted-foreground;
+  }
+
+  code {
+    @apply relative rounded bg-muted px-[0.3rem] py-[0.2rem] font-mono text-sm font-semibold;
+  }
+
+  pre {
+    @apply overflow-x-auto rounded-lg bg-muted p-4;
+  }
+
+  pre code {
+    @apply bg-transparent p-0;
+  }
+
+  ul,
+  ol {
+    @apply ml-6 list-disc space-y-2;
+  }
+
+  ol {
+    @apply list-decimal;
+  }
+
+  li {
+    @apply leading-7;
+  }
+
+  a {
+    @apply font-medium text-primary underline-offset-4 hover:underline;
+  }
+
+  strong {
+    @apply font-semibold;
+  }
+
+  em {
+    @apply italic;
+  }
+
+  small {
+    @apply text-sm font-medium leading-none;
   }
 }
