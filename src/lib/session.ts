@@ -217,7 +217,6 @@ export async function requireRole(
 
   // TypeScript doesn't know that redirect() throws, so we need this
   // This line is never reached because redirect() throws
-  throw new Error("Redirect failed");
 }
 
 /**
