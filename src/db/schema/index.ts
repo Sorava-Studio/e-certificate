@@ -1,46 +1,43 @@
 // ============================================
-// 🗄️ DATABASE SCHEMA - MAIN EXPORT
+// 🗄️ DATABASE SCHEMA - DOCUMENTATION
 // ============================================
-// Central export for all database schemas
-// Import your schema files here as you create them
+// This file documents the schema organization.
+// Import directly from specific files to avoid barrel file performance issues.
 // ============================================
-
-// Example: Export user schema when created
-// export * from './users';
-// export * from './certificates';
-// export * from './organizations';
-
-// Placeholder export to prevent empty module errors
-export const schemas = {} as const;
 
 // ============================================
 // 📝 SCHEMA ORGANIZATION
 // ============================================
 //
-// Recommended structure:
+// Structure:
 //   src/db/schema/
-//     ├── index.ts          (this file - central export)
-//     ├── users.ts          (user-related tables)
-//     ├── certificates.ts   (certificate tables)
-//     ├── organizations.ts  (organization tables)
-//     └── ...
+//     ├── index.ts           (this file - documentation only)
+//     ├── tables/
+//     │   ├── users.ts       (user table)
+//     │   ├── certificates.ts (certificate table)
+//     │   └── ...
+//     └── enums/
+//         ├── userRoles.ts   (user role enum)
+//         ├── status.ts      (status enum)
+//         └── ...
 //
-// Each schema file should export:
-//   - Table definitions
-//   - Type exports (inferSelect, inferInsert)
-//   - Relations (if using relational queries)
+// ============================================
+// 📚 USAGE - IMPORT DIRECTLY FROM SOURCE FILES
+// ============================================
 //
-// Example schema file (users.ts):
-//   import { pgTable, serial, text, timestamp } from 'drizzle-orm/pg-core';
+// ✅ CORRECT - Import directly from specific files:
 //
-//   export const users = pgTable('users', {
-//     id: serial('id').primaryKey(),
-//     name: text('name').notNull(),
-//     email: text('email').notNull().unique(),
-//     createdAt: timestamp('created_at').defaultNow().notNull(),
-//   });
+//   // Import a specific table
+//   import { users } from '@/db/schema/tables/users';
+//   import type { User, NewUser } from '@/db/schema/tables/users';
 //
-//   export type User = typeof users.$inferSelect;
-//   export type NewUser = typeof users.$inferInsert;
+//   // Import a specific enum
+//   import { userRoleEnum } from '@/db/schema/enums/userRoles';
+//
+//   // Use in your code
+//   const allUsers = await db.select().from(users);
+//
+// ❌ AVOID - Don't use barrel file imports (performance anti-pattern):
+//   import { users } from '@/db/schema';  // Slower, loads unused modules
 //
 // ============================================
