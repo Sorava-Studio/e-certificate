@@ -23,11 +23,7 @@ if (!DATABASE_URL) {
 // ============================================
 // Migration Client
 // ============================================
-// Use a dedicated connection for migrations
-const migrationClient = postgres(DATABASE_URL, {
-  max: 1, // Single connection for migrations
-});
-
+const migrationClient = postgres(DATABASE_URL, { max: 1 });
 const db = drizzle(migrationClient);
 
 // ============================================
@@ -45,10 +41,10 @@ async function runMigrations() {
   } catch (error) {
     process.stderr.write(
       `❌ Migration failed: ${error}\n` +
-      "Common causes:\n" +
-      "  - Check that your DATABASE_URL is correct and set in your environment.\n" +
-      "  - Ensure that your PostgreSQL server is running and accessible.\n" +
-      "  - Verify network connectivity to the database.\n"
+        "Common causes:\n" +
+        "  - Check that your DATABASE_URL is correct\n" +
+        "  - Ensure PostgreSQL server is running\n" +
+        "  - Verify network connectivity\n"
     );
     process.exit(1);
   } finally {
@@ -56,5 +52,4 @@ async function runMigrations() {
   }
 }
 
-// Run migrations
 runMigrations();

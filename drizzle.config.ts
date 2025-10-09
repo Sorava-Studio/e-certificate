@@ -19,7 +19,7 @@ export default defineConfig({
   },
 
   // Schema files location
-  schema: "./src/db/schema/*",
+  schema: "./src/db/schema/**/*",
 
   // Migrations output directory
   out: "./src/db/migrations",
