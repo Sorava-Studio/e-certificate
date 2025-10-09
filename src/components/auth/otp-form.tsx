@@ -77,8 +77,8 @@ export function OTPForm({ className, ...props }: React.ComponentProps<"div">) {
       </Card>
       <FieldDescription className="text-center">
         By clicking continue, you agree to our{" "}
-        <a href="#terms">Terms of Service</a> and{" "}
-        <a href="#privacy">Privacy Policy</a>.
+        <a href="/terms">Terms of Service</a> and{" "}
+        <a href="/privacy">Privacy Policy</a>.
       </FieldDescription>
     </div>
   );
