@@ -60,7 +60,7 @@ export function OTPForm({ className, ...props }: React.ComponentProps<"div">) {
               <Field>
                 <Button type="submit">Verify</Button>
                 <FieldDescription className="text-center">
-                  Didn&apos;t receive the code? <a href="#resend">Resend</a>
+                  Didn&apos;t receive the code? <button type="button">Resend</button>
                 </FieldDescription>
               </Field>
             </FieldGroup>
