@@ -1,3 +1,4 @@
+import { LogoutButton } from "@/components/auth/logout-button";
 import { requireAuth } from "@/lib/session";
 
 export default async function DashboardPage() {
@@ -11,12 +12,17 @@ export default async function DashboardPage() {
         <p className="mt-4 text-gray-600">
           This is a protected dashboard page.
         </p>
-        <div className="mt-6 rounded-lg bg-gray-100 p-6">
-          <p className="font-semibold text-gray-700 text-sm">
+        <div className="mt-6 rounded-lg bg-gray-100 p-6 dark:bg-gray-800">
+          <p className="font-semibold text-gray-700 text-sm dark:text-gray-300">
             Authenticated User:
           </p>
           <p className="mt-2 text-lg">{user.name || user.email}</p>
-          <p className="mt-1 text-gray-500 text-sm">Role: {user.role}</p>
+          <p className="mt-1 text-gray-500 text-sm dark:text-gray-400">
+            Role: {user.role}
+          </p>
+        </div>
+        <div className="mt-6">
+          <LogoutButton />
         </div>
       </div>
     </div>

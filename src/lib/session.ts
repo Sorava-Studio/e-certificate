@@ -215,8 +215,7 @@ export async function requireRole(
     redirect(redirectTo);
   }
 
-  // TypeScript doesn't know that redirect() throws, so we need this
-  // This line is never reached because redirect() throws
+  return session;
 }
 
 /**
