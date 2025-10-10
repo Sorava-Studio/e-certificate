@@ -1,6 +1,17 @@
-import Image from "next/image";
+"use client";
+
+import { AlertCircle } from "lucide-react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useState } from "react";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import {
   Field,
   FieldDescription,
@@ -9,53 +20,128 @@ import {
   FieldSeparator,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
+import { authClient } from "@/lib/auth-client";
 import { cn } from "@/lib/utils";
+import { type LoginFormData, loginSchema } from "@/validations/auth";
 
 export function LoginForm({
   className,
   ...props
 }: React.ComponentProps<"div">) {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const callbackUrl = searchParams.get("callbackUrl") || "/dashboard";
+
+  const [formData, setFormData] = useState<LoginFormData>({
+    email: "",
+    password: "",
+  });
+  const [errors, setErrors] = useState<
+    Partial<Record<keyof LoginFormData, string>>
+  >({});
+  const [generalError, setGeneralError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleChange = (field: keyof LoginFormData, value: string) => {
+    setFormData((prev) => ({ ...prev, [field]: value }));
+    // Clear field error when user starts typing
+    if (errors[field]) {
+      setErrors((prev) => ({ ...prev, [field]: undefined }));
+    }
+  };
+
+  const handleGoogleSignIn = async () => {
+    setIsLoading(true);
+    setGeneralError("");
+
+    try {
+      await authClient.signIn.social({
+        provider: "google",
+        callbackURL: callbackUrl,
+      });
+    } catch {
+      setGeneralError("Failed to sign in with Google. Please try again.");
+      setIsLoading(false);
+    }
+  };
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setIsLoading(true);
+    setGeneralError("");
+
+    // Validate form data
+    const result = loginSchema.safeParse(formData);
+
+    if (!result.success) {
+      const fieldErrors: Partial<Record<keyof LoginFormData, string>> = {};
+      for (const error of result.error.issues) {
+        const path = error.path[0] as keyof LoginFormData;
+        fieldErrors[path] = error.message;
+      }
+      setErrors(fieldErrors);
+      setGeneralError("Please fix the errors above to continue.");
+      setIsLoading(false);
+      return;
+    }
+
+    try {
+      // Sign in with email and password
+      const { error } = await authClient.signIn.email({
+        email: formData.email,
+        password: formData.password,
+        callbackURL: callbackUrl,
+      });
+
+      if (error) {
+        if (error.message?.includes("INVALID_EMAIL_OR_PASSWORD")) {
+          setGeneralError("Invalid email or password. Please try again.");
+        } else {
+          setGeneralError(
+            error.message || "Failed to sign in. Please try again."
+          );
+        }
+        setIsLoading(false);
+        return;
+      }
+
+      // Clear errors on success
+      setErrors({});
+      setGeneralError("");
+
+      // Redirect to dashboard or callback URL
+      router.push(callbackUrl);
+      router.refresh();
+    } catch {
+      setGeneralError("An unexpected error occurred. Please try again.");
+      setIsLoading(false);
+    }
+  };
+
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
-      <Card className="overflow-hidden p-0">
-        <CardContent className="grid p-0 md:grid-cols-2">
-          <form className="p-6 md:p-8">
+      <Card>
+        <CardHeader className="text-center">
+          <CardTitle className="text-xl">Welcome back</CardTitle>
+          <CardDescription>Login with Google account</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <form onSubmit={handleSubmit}>
             <FieldGroup>
-              <div className="flex flex-col items-center gap-2 text-center">
-                <h1 className="font-bold text-2xl">Welcome back</h1>
-                <p className="text-balance text-muted-foreground">
-                  Login to your Certificate account
-                </p>
-              </div>
+              {generalError && (
+                <Alert variant="destructive">
+                  <AlertCircle className="h-4 w-4" />
+                  <AlertDescription>{generalError}</AlertDescription>
+                </Alert>
+              )}
+
               <Field>
-                <FieldLabel htmlFor="email">Email</FieldLabel>
-                <Input
-                  id="email"
-                  placeholder="m@example.com"
-                  required
-                  type="email"
-                />
-              </Field>
-              <Field>
-                <div className="flex items-center">
-                  <FieldLabel htmlFor="password">Password</FieldLabel>
-                  <a
-                    className="ml-auto text-sm underline-offset-2 hover:underline"
-                    href="/forgot-password"
-                  >
-                    Forgot your password?
-                  </a>
-                </div>
-                <Input id="password" required type="password" />
-              </Field>
-              <Field>
-                <Button type="submit">Login</Button>
-              </Field>
-              <FieldSeparator className="*:data-[slot=field-separator-content]:bg-card">
-                Or continue with
-              </FieldSeparator>
-              <Field className="grid grid-cols-1 gap-4">
-                <Button type="button" variant="outline">
+                <Button
+                  disabled={isLoading}
+                  onClick={handleGoogleSignIn}
+                  type="button"
+                  variant="outline"
+                >
                   <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                     <title>Google Logo</title>
                     <path
@@ -63,22 +149,73 @@ export function LoginForm({
                       fill="currentColor"
                     />
                   </svg>
-                  <span className="sr-only">Login with Google</span>
+                  Login with Google
                 </Button>
               </Field>
-              <FieldDescription className="text-center">
-                Don&apos;t have an account? <a href="/register">Sign up</a>
-              </FieldDescription>
+
+              <FieldSeparator className="*:data-[slot=field-separator-content]:bg-card">
+                Or continue with
+              </FieldSeparator>
+
+              <Field>
+                <FieldLabel htmlFor="email">Email</FieldLabel>
+                <Input
+                  aria-describedby={errors.email ? "email-error" : undefined}
+                  aria-invalid={!!errors.email}
+                  disabled={isLoading}
+                  id="email"
+                  onChange={(e) => handleChange("email", e.target.value)}
+                  placeholder="m@example.com"
+                  required
+                  type="email"
+                  value={formData.email}
+                />
+                {errors.email && (
+                  <p className="text-destructive text-sm" id="email-error">
+                    {errors.email}
+                  </p>
+                )}
+              </Field>
+
+              <Field>
+                <div className="flex items-center">
+                  <FieldLabel htmlFor="password">Password</FieldLabel>
+                  <a
+                    className="ml-auto text-sm underline-offset-4 hover:underline"
+                    href="/forgot-password"
+                  >
+                    Forgot your password?
+                  </a>
+                </div>
+                <Input
+                  aria-describedby={
+                    errors.password ? "password-error" : undefined
+                  }
+                  aria-invalid={!!errors.password}
+                  disabled={isLoading}
+                  id="password"
+                  onChange={(e) => handleChange("password", e.target.value)}
+                  required
+                  type="password"
+                  value={formData.password}
+                />
+                {errors.password && (
+                  <p className="text-destructive text-sm" id="password-error">
+                    {errors.password}
+                  </p>
+                )}
+              </Field>
+
+              <Field>
+                <Button disabled={isLoading} type="submit">
+                  {isLoading ? "Signing in..." : "Login"}
+                </Button>
+                <FieldDescription className="text-center">
+                  Don&apos;t have an account? <a href="/register">Sign up</a>
+                </FieldDescription>
+              </Field>
             </FieldGroup>
           </form>
-          <div className="relative hidden bg-muted md:block">
-            <Image
-              alt="Login background"
-              className="object-cover dark:brightness-[0.2] dark:grayscale"
-              fill
-              src="/login-image.png"
-            />
-          </div>
         </CardContent>
       </Card>
       <FieldDescription className="px-6 text-center">
