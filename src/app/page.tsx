@@ -12,6 +12,7 @@ import {
   X,
 } from "lucide-react";
 import Link from "next/link";
+import { UserProfile } from "@/components/layout/user-profile";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -88,9 +89,7 @@ export default function Home() {
             <Link href="#pricing">
               <Button variant="ghost">Pricing</Button>
             </Link>
-            <Link href="/login">
-              <Button variant="outline">Sign In</Button>
-            </Link>
+            <UserProfile />
             <ModeToggle />
           </div>
         </div>
