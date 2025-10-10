@@ -235,7 +235,7 @@ export function RegisterForm({
 
               <Field>
                 <Button disabled={isLoading} type="submit">
-                  {isLoading ? "Creating Account..." : "Creating Account"}
+                  {isLoading ? "Creating Account..." : "Create Account"}
                 </Button>
                 <FieldDescription className="text-center">
                   Already have an account? <a href="/login">Sign in</a>
