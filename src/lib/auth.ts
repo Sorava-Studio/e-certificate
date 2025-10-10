@@ -19,12 +19,35 @@ const stripeClient = new Stripe(stripeSecretKey, {
   apiVersion: "2025-09-30.clover",
 });
 
+// Time constants
+const SECONDS_IN_MINUTE = 60;
+const MINUTES_IN_HOUR = 60;
+const HOURS_IN_DAY = 24;
+const DAYS_IN_WEEK = 7;
+const COOKIE_CACHE_MINUTES = 5;
+
+// Session configuration constants
+const SESSION_EXPIRES_IN_SECONDS =
+  SECONDS_IN_MINUTE * MINUTES_IN_HOUR * HOURS_IN_DAY * DAYS_IN_WEEK; // 7 days
+const SESSION_UPDATE_AGE_SECONDS =
+  SECONDS_IN_MINUTE * MINUTES_IN_HOUR * HOURS_IN_DAY; // 1 day
+const SESSION_COOKIE_CACHE_MAX_AGE_SECONDS =
+  COOKIE_CACHE_MINUTES * SECONDS_IN_MINUTE; // 5 minutes
+
 export const auth = betterAuth({
   database: drizzleAdapter(db, {
     provider: "pg", // or "mysql", "sqlite"
   }),
   emailAndPassword: {
     enabled: true,
+  },
+  session: {
+    expiresIn: SESSION_EXPIRES_IN_SECONDS,
+    updateAge: SESSION_UPDATE_AGE_SECONDS,
+    cookieCache: {
+      enabled: true,
+      maxAge: SESSION_COOKIE_CACHE_MAX_AGE_SECONDS,
+    },
   },
   socialProviders: {
     google: {
@@ -35,6 +58,7 @@ export const auth = betterAuth({
   plugins: [
     admin(),
     emailOTP({
+      overrideDefaultEmailVerification: true,
       async sendVerificationOTP({ email, otp, type }) {
         if (process.env.NODE_ENV === "development") {
           // biome-ignore lint/suspicious/noConsole: Development OTP logging
