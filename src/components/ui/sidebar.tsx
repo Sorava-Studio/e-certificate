@@ -283,16 +283,30 @@ function SidebarTrigger({
 function SidebarRail({ className, ...props }: React.ComponentProps<"button">) {
   const { toggleSidebar } = useSidebar();
 
+  // Extract class groups for readability
+  const baseClasses =
+    "-translate-x-1/2 group-data-[side=left]:-right-4 absolute inset-y-0 z-20 hidden w-4 transition-all ease-linear after:absolute after:inset-y-0 after:left-1/2 after:w-[2px] hover:after:bg-sidebar-border group-data-[side=right]:left-0 sm:flex";
+  const cursorClasses =
+    "in-data-[side=left]:cursor-w-resize in-data-[side=right]:cursor-e-resize";
+  const collapsedCursorClasses =
+    "[[data-side=left][data-state=collapsed]_&]:cursor-e-resize [[data-side=right][data-state=collapsed]_&]:cursor-w-resize";
+  const offcanvasClasses =
+    "group-data-[collapsible=offcanvas]:translate-x-0 hover:group-data-[collapsible=offcanvas]:bg-sidebar group-data-[collapsible=offcanvas]:after:left-full";
+  const offcanvasLeftClasses =
+    "[[data-side=left][data-collapsible=offcanvas]_&]:-right-2";
+  const offcanvasRightClasses =
+    "[[data-side=right][data-collapsible=offcanvas]_&]:-left-2";
+
   return (
     <button
       aria-label="Toggle Sidebar"
       className={cn(
-        "-translate-x-1/2 group-data-[side=left]:-right-4 absolute inset-y-0 z-20 hidden w-4 transition-all ease-linear after:absolute after:inset-y-0 after:left-1/2 after:w-[2px] hover:after:bg-sidebar-border group-data-[side=right]:left-0 sm:flex",
-        "in-data-[side=left]:cursor-w-resize in-data-[side=right]:cursor-e-resize",
-        "[[data-side=left][data-state=collapsed]_&]:cursor-e-resize [[data-side=right][data-state=collapsed]_&]:cursor-w-resize",
-        "group-data-[collapsible=offcanvas]:translate-x-0 hover:group-data-[collapsible=offcanvas]:bg-sidebar group-data-[collapsible=offcanvas]:after:left-full",
-        "[[data-side=left][data-collapsible=offcanvas]_&]:-right-2",
-        "[[data-side=right][data-collapsible=offcanvas]_&]:-left-2",
+        baseClasses,
+        cursorClasses,
+        collapsedCursorClasses,
+        offcanvasClasses,
+        offcanvasLeftClasses,
+        offcanvasRightClasses,
         className
       )}
       data-sidebar="rail"
