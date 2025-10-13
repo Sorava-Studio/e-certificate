@@ -8,6 +8,7 @@
 import { drizzle } from "drizzle-orm/postgres-js";
 import postgres from "postgres";
 import { account, session, user, verification } from "./schema/tables/auth";
+import { item } from "./schema/tables/items";
 
 // ============================================
 // Environment Variables
@@ -39,6 +40,7 @@ export const db = drizzle(queryClient, {
     session,
     account,
     verification,
+    item,
   },
   logger: DATABASE_LOGGING,
 });

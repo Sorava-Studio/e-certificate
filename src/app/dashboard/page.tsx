@@ -1,3 +1,4 @@
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { requireAuth } from "@/lib/session";
 
 export default async function DashboardPage() {
@@ -5,15 +6,57 @@ export default async function DashboardPage() {
   const { user } = await requireAuth();
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="mx-auto max-w-2xl">
-        <h1 className="font-bold text-4xl">Dashboard</h1>
-        <p className="mt-2 text-muted-foreground">
-          Welcome back, {user.name || user.email}!
-        </p>
+    <>
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="font-bold text-3xl tracking-tight">Dashboard</h1>
+          <p className="text-muted-foreground">
+            Welcome back, {user.name || user.email}!
+          </p>
+        </div>
+      </div>
 
-        <div className="mt-8 rounded-lg border bg-card p-6 shadow-sm">
-          <h2 className="mb-4 font-semibold text-lg">User Information</h2>
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+        <Card>
+          <CardHeader>
+            <CardTitle className="font-medium text-sm">
+              Total Certificates
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="font-bold text-2xl">0</div>
+            <p className="text-muted-foreground text-xs">No certificates yet</p>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle className="font-medium text-sm">Templates</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="font-bold text-2xl">0</div>
+            <p className="text-muted-foreground text-xs">
+              Create your first template
+            </p>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle className="font-medium text-sm">Recipients</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="font-bold text-2xl">0</div>
+            <p className="text-muted-foreground text-xs">Add recipients</p>
+          </CardContent>
+        </Card>
+      </div>
+
+      <Card className="col-span-full">
+        <CardHeader>
+          <CardTitle>User Information</CardTitle>
+        </CardHeader>
+        <CardContent>
           <dl className="space-y-2">
             <div className="flex justify-between">
               <dt className="text-muted-foreground">Name:</dt>
@@ -34,8 +77,8 @@ export default async function DashboardPage() {
               </dd>
             </div>
           </dl>
-        </div>
-      </div>
-    </div>
+        </CardContent>
+      </Card>
+    </>
   );
 }
