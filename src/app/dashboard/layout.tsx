@@ -1,7 +1,11 @@
-import { Shield } from "lucide-react";
-import Link from "next/link";
-import { UserProfileAuthenticated } from "@/components/layout/user-profile";
+import { AppSidebar } from "@/components/layout/app-sidebar";
 import { ModeToggle } from "@/components/ui/mode-toggle";
+import { Separator } from "@/components/ui/separator";
+import {
+  SidebarInset,
+  SidebarProvider,
+  SidebarTrigger,
+} from "@/components/ui/sidebar";
 import { getCurrentUser } from "@/lib/session";
 
 export default async function DashboardLayout({
@@ -11,24 +15,25 @@ export default async function DashboardLayout({
 }) {
   const user = await getCurrentUser();
 
+  if (!user) {
+    return null;
+  }
+
   return (
-    <div className="min-h-screen">
-      {/* Dashboard Navigation */}
-      <nav className="sticky top-0 z-50 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-        <div className="container mx-auto flex h-16 items-center justify-between px-4">
-          <Link className="flex items-center gap-2" href="/dashboard">
-            <Shield className="h-6 w-6 text-primary" />
-            <span className="font-bold text-xl">Certificate</span>
-          </Link>
-          <div className="flex items-center gap-4">
-            {user && <UserProfileAuthenticated user={user} />}
+    <SidebarProvider>
+      <AppSidebar user={user} />
+      <SidebarInset>
+        <header className="sticky top-0 z-10 flex h-16 shrink-0 items-center gap-2 border-b bg-background px-4">
+          <SidebarTrigger className="-ml-1" />
+          <Separator className="mr-2 h-4" orientation="vertical" />
+          <div className="flex flex-1 items-center justify-end gap-2">
             <ModeToggle />
           </div>
-        </div>
-      </nav>
-
-      {/* Dashboard Content */}
-      <main>{children}</main>
-    </div>
+        </header>
+        <main className="flex flex-1 flex-col gap-4 p-4 md:gap-8 md:p-8">
+          {children}
+        </main>
+      </SidebarInset>
+    </SidebarProvider>
   );
 }
