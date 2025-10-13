@@ -1,3 +1,5 @@
+import { CertificationButton } from "@/components/dashboard/certification/CertificationButton";
+import { RefreshSessionButton } from "@/components/layout/RefreshSessionButton";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { requireAuth } from "@/lib/session";
 
@@ -14,42 +16,10 @@ export default async function DashboardPage() {
             Welcome back, {user.name || user.email}!
           </p>
         </div>
-      </div>
-
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-        <Card>
-          <CardHeader>
-            <CardTitle className="font-medium text-sm">
-              Total Certificates
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="font-bold text-2xl">0</div>
-            <p className="text-muted-foreground text-xs">No certificates yet</p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader>
-            <CardTitle className="font-medium text-sm">Templates</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="font-bold text-2xl">0</div>
-            <p className="text-muted-foreground text-xs">
-              Create your first template
-            </p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader>
-            <CardTitle className="font-medium text-sm">Recipients</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="font-bold text-2xl">0</div>
-            <p className="text-muted-foreground text-xs">Add recipients</p>
-          </CardContent>
-        </Card>
+        <div className="flex gap-2">
+          <RefreshSessionButton />
+          <CertificationButton />
+        </div>
       </div>
 
       <Card className="col-span-full">

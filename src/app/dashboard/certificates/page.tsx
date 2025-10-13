@@ -1,135 +1,103 @@
-import { Award, Plus } from "lucide-react";
-import Link from "next/link";
-import { redirect } from "next/navigation";
-import { getUserItems } from "@/app/actions/items";
-import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import {
-  Empty,
-  EmptyContent,
-  EmptyDescription,
-  EmptyHeader,
-  EmptyMedia,
-  EmptyTitle,
-} from "@/components/ui/empty";
-import { getCurrentUser } from "@/lib/session";
+// ============================================
+// 📜 CERTIFICATES LIST PAGE
+// ============================================
+// Display all user certifications with filtering and search
+// ============================================
+
+import { desc, eq } from "drizzle-orm";
+import { Plus } from "lucide-react";
+import { CertificateCard } from "@/components/certificates/CertificateCard";
+import { CertificationButton } from "@/components/dashboard/certification/CertificationButton";
+import { PaymentReturnHandler } from "@/components/dashboard/certification/PaymentReturnHandler";
+import { db } from "@/db";
+import { certification } from "@/db/schema/tables/certification";
+import { requireAuth } from "@/lib/session";
+
+const CENTS_PER_EURO = 100;
 
 export default async function CertificatesPage() {
-  const user = await getCurrentUser();
+  const { user } = await requireAuth();
 
-  if (!user) {
-    redirect("/login");
-  }
-
-  const result = await getUserItems();
-  const items = result.success && result.data ? result.data : [];
-
-  const getStatusBadge = (status: string) => {
-    const styles = {
-      draft: "bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-100",
-      pending_verification:
-        "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-100",
-      verified:
-        "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-100",
-      flagged: "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-100",
-    };
-
-    const labels = {
-      draft: "Draft",
-      pending_verification: "Pending",
-      verified: "Verified",
-      flagged: "Flagged",
-    };
-
-    return (
-      <span
-        className={`inline-flex rounded-full px-2 py-1 font-semibold text-xs ${styles[status as keyof typeof styles]}`}
-      >
-        {labels[status as keyof typeof labels]}
-      </span>
-    );
-  };
+  // Fetch user's certifications
+  const userCertifications = await db.query.certification.findMany({
+    where: eq(certification.userId, user.id),
+    with: {
+      photos: {
+        orderBy: (photos, { asc }) => [asc(photos.order)],
+      },
+    },
+    orderBy: [desc(certification.createdAt)],
+  });
 
   return (
-    <div className="container mx-auto py-8">
-      <div className="mb-8 flex items-center justify-between">
+    <div className="space-y-8">
+      {/* Payment Return Handler */}
+      <PaymentReturnHandler />
+      {/* Header */}
+      <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div>
-          <h1 className="font-bold text-3xl">My Certificates</h1>
-          <p className="mt-2 text-muted-foreground">
-            Manage your registered luxury items and certificates
+          <h1 className="font-bold text-3xl tracking-tight">
+            Mes Certifications
+          </h1>
+          <p className="text-muted-foreground">
+            Gérez et consultez vos certifications EMERA
           </p>
         </div>
-        <Button asChild>
-          <Link href="/dashboard/certificates/new">
-            <Plus className="mr-2 size-4" />
-            Register New Item
-          </Link>
-        </Button>
+        <CertificationButton />
+      </div>{" "}
+      {/* Stats */}
+      <div className="grid gap-4 md:grid-cols-4">
+        <div className="rounded-lg border bg-card p-4">
+          <div className="text-muted-foreground text-sm">Total</div>
+          <div className="font-bold text-2xl">{userCertifications.length}</div>
+        </div>
+        <div className="rounded-lg border bg-card p-4">
+          <div className="text-muted-foreground text-sm">Actifs</div>
+          <div className="font-bold text-2xl">
+            {
+              userCertifications.filter((cert) => cert.status === "certifie")
+                .length
+            }
+          </div>
+        </div>
+        <div className="rounded-lg border bg-card p-4">
+          <div className="text-muted-foreground text-sm">En attente</div>
+          <div className="font-bold text-2xl">
+            {
+              userCertifications.filter((cert) => cert.status === "en_attente")
+                .length
+            }
+          </div>
+        </div>
+        <div className="rounded-lg border bg-card p-4">
+          <div className="text-muted-foreground text-sm">Valeur totale</div>
+          <div className="font-bold text-2xl">
+            {new Intl.NumberFormat("fr-FR", {
+              style: "currency",
+              currency: "EUR",
+            }).format(
+              userCertifications.reduce((sum, cert) => sum + cert.price, 0) /
+                CENTS_PER_EURO
+            )}
+          </div>
+        </div>
       </div>
-
-      {items.length === 0 ? (
-        <Empty>
-          <EmptyHeader>
-            <EmptyMedia variant="icon">
-              <Award className="size-6" />
-            </EmptyMedia>
-            <EmptyTitle>No items yet</EmptyTitle>
-            <EmptyDescription>
-              Get started by registering your first luxury item for
-              certification.
-            </EmptyDescription>
-          </EmptyHeader>
-          <EmptyContent>
-            <Button asChild>
-              <Link href="/dashboard/certificates/new">
-                <Plus className="mr-2 size-4" />
-                Register Your First Item
-              </Link>
-            </Button>
-          </EmptyContent>
-        </Empty>
+      {/* Certificates Grid */}
+      {userCertifications.length === 0 ? (
+        <div className="flex min-h-[400px] flex-col items-center justify-center rounded-lg border border-dashed p-8 text-center">
+          <div className="mx-auto flex size-12 items-center justify-center rounded-full bg-primary/10">
+            <Plus className="size-6 text-primary" />
+          </div>
+          <h3 className="mt-4 font-semibold text-lg">Aucune certification</h3>
+          <p className="mt-2 mb-4 text-muted-foreground text-sm">
+            Commencez par créer votre première certification EMERA
+          </p>
+          <CertificationButton />
+        </div>
       ) : (
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {items.map((item) => (
-            <Link href={`/dashboard/certificates/${item.id}`} key={item.id}>
-              <Card className="transition-shadow hover:shadow-lg">
-                <CardHeader>
-                  <div className="flex items-start justify-between">
-                    <CardTitle className="line-clamp-1">{item.brand}</CardTitle>
-                    {getStatusBadge(item.status)}
-                  </div>
-                  <CardDescription className="line-clamp-1">
-                    {item.model}
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <dl className="space-y-2 text-sm">
-                    <div className="flex justify-between">
-                      <dt className="text-muted-foreground">Type:</dt>
-                      <dd className="font-medium capitalize">{item.type}</dd>
-                    </div>
-                    <div className="flex justify-between">
-                      <dt className="text-muted-foreground">Reference:</dt>
-                      <dd className="font-medium">{item.referenceNumber}</dd>
-                    </div>
-                    <div className="flex justify-between">
-                      <dt className="text-muted-foreground">Serial:</dt>
-                      <dd className="font-mono text-xs">{item.serialNumber}</dd>
-                    </div>
-                    <div className="flex justify-between">
-                      <dt className="text-muted-foreground">Year:</dt>
-                      <dd className="font-medium">{item.yearManufactured}</dd>
-                    </div>
-                  </dl>
-                </CardContent>
-              </Card>
-            </Link>
+          {userCertifications.map((cert) => (
+            <CertificateCard certification={cert} key={cert.id} />
           ))}
         </div>
       )}

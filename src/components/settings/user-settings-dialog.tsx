@@ -37,11 +37,16 @@ import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { authClient } from "@/lib/auth-client";
-import { useUploadThing } from "@/lib/uploadthing";
 
 // ============================================
 // USER SETTINGS DIALOG
 // ============================================
+
+// Constants for file upload validation
+const FILE_SIZE_MB = 5;
+const BYTES_IN_KB = 1024;
+const KB_IN_MB = 1024;
+const MAX_FILE_SIZE_BYTES = FILE_SIZE_MB * KB_IN_MB * BYTES_IN_KB;
 
 type UserSettingsDialogProps = {
   trigger?: React.ReactNode;
@@ -56,7 +61,7 @@ export function UserSettingsDialog({
   onOpenChange,
 }: UserSettingsDialogProps) {
   const router = useRouter();
-  const { data: session } = authClient.useSession();
+  const { data: session, refetch: refetchSession } = authClient.useSession();
   const { theme, setTheme } = useTheme();
   const [internalOpen, setInternalOpen] = useState(false);
 
@@ -67,25 +72,84 @@ export function UserSettingsDialog({
 
   // Avatar upload state
   const [isUploadingAvatar, setIsUploadingAvatar] = useState(false);
-  const { startUpload } = useUploadThing("avatarUploader", {
-    onClientUploadComplete: async (res) => {
-      // File uploaded successfully
-      if (res?.[0]?.url) {
-        const result = await updateProfileImage(res[0].url);
-        if (result.success) {
-          router.refresh();
-        } else {
-          setProfileError(result.message);
-        }
+  const [optimisticAvatar, setOptimisticAvatar] = useState<string | null>(null);
+
+  // Validate avatar file
+  const validateAvatarFile = (file: File): string | null => {
+    if (!file.type.startsWith("image/")) {
+      return "Please select an image file";
+    }
+    if (file.size > MAX_FILE_SIZE_BYTES) {
+      return `Image must be less than ${FILE_SIZE_MB}MB`;
+    }
+    return null;
+  };
+
+  // Clean up optimistic avatar preview
+  const cleanupOptimisticAvatar = (previewUrl: string) => {
+    URL.revokeObjectURL(previewUrl);
+    setOptimisticAvatar(null);
+  };
+
+  // Upload avatar using local storage
+  const handleAvatarUpload = async (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const file = event.target.files?.[0];
+    if (!file) {
+      return;
+    }
+
+    // Validate file
+    const validationError = validateAvatarFile(file);
+    if (validationError) {
+      setProfileError(validationError);
+      return;
+    }
+
+    setIsUploadingAvatar(true);
+    setProfileError("");
+
+    // Create optimistic preview immediately
+    const previewUrl = URL.createObjectURL(file);
+    setOptimisticAvatar(previewUrl);
+
+    try {
+      const formData = new FormData();
+      formData.append("file", file);
+
+      const response = await fetch("/api/upload/avatar", {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.error || "Upload failed");
       }
+
+      const data = await response.json();
+
+      // Update profile with new avatar URL
+      const result = await updateProfileImage(data.url);
+      if (result.success) {
+        cleanupOptimisticAvatar(previewUrl);
+        // Refetch session and refresh router
+        await refetchSession();
+        router.refresh();
+      } else {
+        setProfileError(result.message);
+        cleanupOptimisticAvatar(previewUrl);
+      }
+    } catch (error) {
+      setProfileError(
+        error instanceof Error ? error.message : "Failed to upload avatar"
+      );
+      cleanupOptimisticAvatar(previewUrl);
+    } finally {
       setIsUploadingAvatar(false);
-    },
-    onUploadError: (error: Error) => {
-      // Upload failed
-      setProfileError(error.message || "Failed to upload image");
-      setIsUploadingAvatar(false);
-    },
-  });
+    }
+  };
 
   // Dialog state
   const [passwordDialogOpen, setPasswordDialogOpen] = useState(false);
@@ -98,6 +162,11 @@ export function UserSettingsDialog({
       onOpenChange(newOpen);
     } else {
       setInternalOpen(newOpen);
+    }
+
+    // Reset optimistic avatar when closing dialog
+    if (!newOpen) {
+      setOptimisticAvatar(null);
     }
   };
 
@@ -135,33 +204,24 @@ export function UserSettingsDialog({
     }
   };
 
-  const handleAvatarUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) {
-      return;
-    }
-
-    setIsUploadingAvatar(true);
-    setProfileError(""); // Clear previous errors
-
-    try {
-      await startUpload([file]);
-      // Success/error handled by callbacks above
-    } catch (error) {
-      setProfileError(
-        error instanceof Error ? error.message : "Failed to upload image"
-      );
-      setIsUploadingAvatar(false);
-    }
-  };
-
   const handleRemoveAvatar = async () => {
     setIsUploadingAvatar(true);
+    setProfileError("");
+
+    // Optimistically remove avatar
+    setOptimisticAvatar("");
+
     const result = await removeProfileImage();
     setIsUploadingAvatar(false);
 
     if (result.success) {
+      // Refetch session and refresh router
+      await refetchSession();
       router.refresh();
+    } else {
+      // Revert optimistic update on error
+      setOptimisticAvatar(null);
+      setProfileError(result.message);
     }
   };
 
@@ -200,12 +260,26 @@ export function UserSettingsDialog({
             <div className="space-y-4">
               {/* Avatar Section */}
               <div className="flex items-center gap-4">
-                <Avatar className="h-20 w-20">
-                  <AvatarImage alt={user.name} src={user.image || undefined} />
-                  <AvatarFallback className="text-xl">
-                    {getUserInitials(user.name)}
-                  </AvatarFallback>
-                </Avatar>
+                <div className="relative">
+                  <Avatar className="h-20 w-20">
+                    <AvatarImage
+                      alt={user.name}
+                      src={
+                        optimisticAvatar !== null
+                          ? optimisticAvatar || undefined
+                          : user.image || undefined
+                      }
+                    />
+                    <AvatarFallback className="text-xl">
+                      {getUserInitials(user.name)}
+                    </AvatarFallback>
+                  </Avatar>
+                  {isUploadingAvatar && (
+                    <div className="absolute inset-0 flex items-center justify-center rounded-full bg-black/50">
+                      <Loader2 className="h-6 w-6 animate-spin text-white" />
+                    </div>
+                  )}
+                </div>
                 <div className="space-y-1">
                   <h3 className="font-medium text-sm">Profile Picture</h3>
                   <p className="text-muted-foreground text-xs">

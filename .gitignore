@@ -210,7 +210,18 @@ storybook-static/
 .sentryclirc
 
 # ====================================
-# 🔒 BETTERAUTH SPECIFIC
+# � FILE UPLOADS (LOCAL STORAGE)
+# ====================================
+# Uploaded files (images, documents, etc.)
+public/uploads/*
+!public/uploads/.gitkeep
+
+# Keep the directory structure but ignore files
+public/uploads/thumbnails/*
+!public/uploads/thumbnails/.gitkeep
+
+# ====================================
+# �🔒 BETTERAUTH SPECIFIC
 # ====================================
 # Any auth-related secrets or keys
 auth-secrets.json

@@ -8,6 +8,10 @@ import {
 } from "@/components/ui/sidebar";
 import { getCurrentUser } from "@/lib/session";
 
+// Force dynamic rendering and disable cache for fresh session data
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 export default async function DashboardLayout({
   children,
 }: {
