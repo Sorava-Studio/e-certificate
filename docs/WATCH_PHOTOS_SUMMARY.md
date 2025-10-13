@@ -63,17 +63,15 @@ ACCEPTED_TYPES = ["image/jpeg", "image/png", "image/heic"]
 - File extension validation
 - Error handling for invalid formats
 
-### ✅ Store Images in Cloud Storage (S3)
-**Status**: Complete - **Migrated from UploadThing to S3**
+### ✅ Store Images in Local Storage (`public/uploads`)
+**Status**: Complete - **Migrated from UploadThing/S3 to Local Storage**
 **Implementation**:
-- AWS S3 integration (`@aws-sdk/client-s3`)
-- Organized folder structure
-- Environment configuration
-- IAM security
+- Images are saved to the `public/uploads` directory within the project.
+- Organized folder structure by user and item.
+- No external cloud dependencies required.
+- Ensure proper file permissions and access control for uploads.
 
-**S3 Structure**:
-```
-bucket/
+**Local Storage Structure**:
 ├── watch-images/{userId}/{itemId}/{timestamp}-{filename}
 ├── thumbnails/watch-images/{userId}/{itemId}/thumb-{timestamp}-{filename}
 └── avatars/{userId}/{timestamp}-{filename}
