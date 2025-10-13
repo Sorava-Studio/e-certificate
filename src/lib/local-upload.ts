@@ -196,10 +196,6 @@ export async function deleteImageWithThumbnail(
 // Validation Functions
 // ============================================
 
-const BYTES_PER_KB = 1024;
-const KB_PER_MB = 1024;
-const MAX_FILE_SIZE_MB = 5;
-
 export const IMAGE_CONFIG = {
   MAX_FILE_SIZE: MAX_FILE_SIZE_MB * KB_PER_MB * BYTES_PER_KB, // 5MB
   MIN_IMAGES: 3,
