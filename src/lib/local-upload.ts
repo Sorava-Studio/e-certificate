@@ -19,6 +19,11 @@ const THUMBNAIL_DIR = join(process.cwd(), "public", "uploads", "thumbnails");
 const THUMBNAIL_WIDTH = 400;
 const THUMBNAIL_HEIGHT = 400;
 
+// File size limits
+const MAX_FILE_SIZE_MB = 5;
+const KB_PER_MB = 1024;
+const BYTES_PER_KB = 1024;
+
 // ============================================
 // Upload Functions
 // ============================================
