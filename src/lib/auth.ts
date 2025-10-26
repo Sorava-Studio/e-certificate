@@ -49,9 +49,15 @@ export const auth = betterAuth({
       maxAge: SESSION_COOKIE_CACHE_MAX_AGE_SECONDS,
     },
   },
+  // Set base URL for proper cookie domain handling
+  baseURL: process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000",
   advanced: {
     cookieAttributes: {
-      sameSite: "none" as const,
+      // Use 'lax' for better compatibility with email links
+      // Lax allows cookies to be sent when navigating from external sites (like email)
+      sameSite: "lax" as const,
+      // Ensure secure cookies in production
+      secure: process.env.NODE_ENV === "production",
     },
   } as Record<string, unknown>,
   // Allow cross-origin requests by configuring trusted origins
