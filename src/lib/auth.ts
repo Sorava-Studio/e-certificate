@@ -50,10 +50,14 @@ export const auth = betterAuth({
     },
   },
   advanced: {
-    cookieOptions: {
-      sameSite: "none",
+    cookieAttributes: {
+      sameSite: "none" as const,
     },
-  },
+  } as Record<string, unknown>,
+  // Allow cross-origin requests by configuring trusted origins
+  trustedOrigins: process.env.NEXT_PUBLIC_APP_URL
+    ? [process.env.NEXT_PUBLIC_APP_URL]
+    : [],
   socialProviders: {
     google: {
       clientId: process.env.GOOGLE_CLIENT_ID as string,
