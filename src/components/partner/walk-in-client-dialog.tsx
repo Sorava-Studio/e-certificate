@@ -17,6 +17,16 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import type { ServiceTierId } from "@/config/pricing";
+
+type PaymentMethod = "cash" | "card_shop" | "stripe";
 
 export function WalkInClientDialog() {
   const router = useRouter();
@@ -31,6 +41,8 @@ export function WalkInClientDialog() {
     city: "",
     postalCode: "",
     country: "",
+    serviceId: "custodia" as ServiceTierId,
+    paymentMethod: "cash" as PaymentMethod,
   });
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -57,6 +69,8 @@ export function WalkInClientDialog() {
         city: "",
         postalCode: "",
         country: "",
+        serviceId: "custodia" as ServiceTierId,
+        paymentMethod: "cash" as PaymentMethod,
       });
       setOpen(false);
 
@@ -192,6 +206,59 @@ export function WalkInClientDialog() {
                   placeholder="France"
                   value={formData.country}
                 />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="serviceId">
+                  Service <span className="text-destructive">*</span>
+                </Label>
+                <Select
+                  name="serviceId"
+                  onValueChange={(value) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      serviceId: value as ServiceTierId,
+                    }))
+                  }
+                  value={formData.serviceId}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Sélectionner un service" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="custodia">Custodia</SelectItem>
+                    <SelectItem value="imperium">Imperium</SelectItem>
+                    <SelectItem value="expertise">Expertise</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="paymentMethod">
+                  Mode de Paiement <span className="text-destructive">*</span>
+                </Label>
+                <Select
+                  name="paymentMethod"
+                  onValueChange={(value) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      paymentMethod: value as PaymentMethod,
+                    }))
+                  }
+                  value={formData.paymentMethod}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Sélectionner le paiement" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="cash">Espèces</SelectItem>
+                    <SelectItem value="card_shop">
+                      Carte (en boutique)
+                    </SelectItem>
+                    <SelectItem value="stripe">Stripe (en ligne)</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
             </div>
           </div>
