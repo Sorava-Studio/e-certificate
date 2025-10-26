@@ -19,14 +19,6 @@ const THUMBNAIL_DIR = join(process.cwd(), "public", "uploads", "thumbnails");
 const THUMBNAIL_WIDTH = 400;
 const THUMBNAIL_HEIGHT = 400;
 
-// File size constants
-const BYTES_PER_KB = 1024;
-const KB_PER_MB = 1024;
-const MAX_FILE_SIZE_MB = 5;
-
-// Regex patterns
-const FILE_EXTENSION_REGEX = /\.[^.]+$/;
-
 // ============================================
 // Upload Functions
 // ============================================
@@ -146,7 +138,7 @@ export async function uploadImageWithThumbnail(
 
   // Generate filenames
   const fileName = generateFileName(userId, itemId, file.name);
-  const base = fileName.replace(FILE_EXTENSION_REGEX, "");
+  const base = fileName.replace(/\.[^.]+$/, '');
   const thumbnailFileName = `thumb_${base}.jpg`;
 
   // Generate thumbnail
