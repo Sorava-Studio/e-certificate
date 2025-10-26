@@ -7,6 +7,7 @@ const { POST: _POST, GET: _GET } = toNextJsHandler(auth);
 const defaultCorsHeaders = {
   "Access-Control-Allow-Methods": "GET,POST,OPTIONS",
   "Access-Control-Allow-Headers": "Content-Type, Authorization",
+  "Access-Control-Allow-Credentials": "true",
 };
 
 function attachCorsHeaders(response: Response, origin: string | null) {
