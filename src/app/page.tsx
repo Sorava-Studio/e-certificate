@@ -651,16 +651,7 @@ export default function Home() {
               </CardHeader>
             </Card>
           </motion.div>
-          <motion.div variants={scaleIn}>
-            <Card className="h-full text-center transition-shadow hover:shadow-lg">
-              <CardHeader>
-                <CardTitle className="font-bold text-4xl text-primary">
-                  50+
-                </CardTitle>
-                <CardDescription>Partner Experts</CardDescription>
-              </CardHeader>
-            </Card>
-          </motion.div>
+          {/* Partner Experts removed (partner UI reset) */}
           <motion.div variants={scaleIn}>
             <Card className="h-full text-center transition-shadow hover:shadow-lg">
               <CardHeader>

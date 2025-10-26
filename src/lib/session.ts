@@ -79,6 +79,9 @@ export async function getSession(): Promise<UserSession | null> {
   try {
     const session = await auth.api.getSession({
       headers: await headers(),
+      query: {
+        disableCookieCache: true, // Force fresh session data
+      },
     });
 
     if (!session) {

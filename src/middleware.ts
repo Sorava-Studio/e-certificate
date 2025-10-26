@@ -52,6 +52,8 @@ const protectedRoutes = [
  */
 const adminRoutes = ["/admin"];
 
+// Partner routes removed — partner UI reset
+
 // ============================================
 // MIDDLEWARE FUNCTION
 // ============================================
@@ -59,69 +61,83 @@ const adminRoutes = ["/admin"];
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  // Skip middleware for:
-  // - Next.js internals (_next)
-  // - API routes (handled separately)
-  // - Static files (images, fonts, etc.)
-  if (
-    pathname.startsWith("/_next") ||
-    pathname.startsWith("/api") ||
-    pathname.includes(".")
-  ) {
+  // Skip middleware for static resources
+  if (shouldSkipMiddleware(pathname)) {
     return NextResponse.next();
   }
 
   // Get session from Better Auth
   const { isAuthenticated, userRole } = await getSession(request);
 
-  // ============================================
-  // PUBLIC AUTH ROUTES
-  // ============================================
-  const isPublicAuthRoute = publicAuthRoutes.some((route) =>
-    pathname.startsWith(route)
-  );
-
-  if (isPublicAuthRoute && isAuthenticated) {
-    // Redirect authenticated users away from auth pages
+  // Handle public auth routes
+  if (isPublicAuthRoute(pathname) && isAuthenticated) {
     return NextResponse.redirect(new URL("/dashboard", request.url));
   }
 
-  // ============================================
-  // ADMIN ROUTES (Role-Based Access Control)
-  // ============================================
+  // Handle role-based routes
+  const roleCheckResult = checkRoleBasedRoutes(
+    pathname,
+    isAuthenticated,
+    userRole,
+    request
+  );
+  if (roleCheckResult) {
+    return roleCheckResult;
+  }
+
+  // Handle general protected routes
+  if (isProtectedRoute(pathname) && !isAuthenticated) {
+    return redirectToLogin(pathname, request);
+  }
+
+  return NextResponse.next();
+}
+
+// ============================================
+// HELPER FUNCTIONS
+// ============================================
+
+function shouldSkipMiddleware(pathname: string): boolean {
+  return (
+    pathname.startsWith("/_next") ||
+    pathname.startsWith("/api") ||
+    pathname.includes(".")
+  );
+}
+
+function isPublicAuthRoute(pathname: string): boolean {
+  return publicAuthRoutes.some((route) => pathname.startsWith(route));
+}
+
+function isProtectedRoute(pathname: string): boolean {
+  return protectedRoutes.some((route) => pathname.startsWith(route));
+}
+
+function redirectToLogin(pathname: string, request: NextRequest): NextResponse {
+  const loginUrl = new URL("/login", request.url);
+  loginUrl.searchParams.set("callbackUrl", pathname);
+  return NextResponse.redirect(loginUrl);
+}
+
+function checkRoleBasedRoutes(
+  pathname: string,
+  isAuthenticated: boolean,
+  userRole: string | null,
+  request: NextRequest
+): NextResponse | null {
+  // Check admin routes
   const isAdminRoute = adminRoutes.some((route) => pathname.startsWith(route));
-
   if (isAdminRoute) {
-    // Check authentication first
     if (!isAuthenticated) {
-      const loginUrl = new URL("/login", request.url);
-      loginUrl.searchParams.set("callbackUrl", pathname);
-      return NextResponse.redirect(loginUrl);
+      return redirectToLogin(pathname, request);
     }
-
-    // Check admin role
     if (userRole !== "admin") {
-      // Non-admin users are redirected to their dashboard
       return NextResponse.redirect(new URL("/dashboard", request.url));
     }
+    return null;
   }
 
-  // ============================================
-  // PROTECTED ROUTES (General Authentication)
-  // ============================================
-  const isProtectedRoute = protectedRoutes.some((route) =>
-    pathname.startsWith(route)
-  );
-
-  if (isProtectedRoute && !isAuthenticated) {
-    const loginUrl = new URL("/login", request.url);
-    // Store the original URL to redirect back after login
-    loginUrl.searchParams.set("callbackUrl", pathname);
-    return NextResponse.redirect(loginUrl);
-  }
-
-  // Allow the request to proceed
-  return NextResponse.next();
+  return null;
 }
 
 // ============================================

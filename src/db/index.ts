@@ -8,7 +8,15 @@
 import { drizzle } from "drizzle-orm/postgres-js";
 import postgres from "postgres";
 import { account, session, user, verification } from "./schema/tables/auth";
-import { item } from "./schema/tables/items";
+import {
+  certification,
+  certificationPhoto,
+  certificationPhotoRelations,
+  certificationRelations,
+  inspectionReport,
+  inspectionReportRelations,
+} from "./schema/tables/certification";
+import { certificationReport } from "./schema/tables/certification-report";
 
 // ============================================
 // Environment Variables
@@ -40,7 +48,13 @@ export const db = drizzle(queryClient, {
     session,
     account,
     verification,
-    item,
+    certification,
+    certificationPhoto,
+    certificationRelations,
+    certificationPhotoRelations,
+    inspectionReport,
+    inspectionReportRelations,
+    certificationReport,
   },
   logger: DATABASE_LOGGING,
 });

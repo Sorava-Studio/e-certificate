@@ -3,13 +3,16 @@
 import {
   Award,
   BookOpen,
+  Briefcase,
   ChevronsUpDown,
   FileText,
   Home,
   LogOut,
+  Package,
   Settings,
   Shield,
   User,
+  UserSquare,
   Users,
 } from "lucide-react";
 import Link from "next/link";
@@ -78,6 +81,24 @@ const menuItems = [
   },
 ];
 
+const partnerMenuItems = [
+  {
+    title: "Dashboard Partner",
+    url: "/dashboard/partner",
+    icon: Home,
+  },
+  {
+    title: "Mes Missions",
+    url: "/dashboard/partner/missions",
+    icon: Briefcase,
+  },
+  {
+    title: "Walk-in Client",
+    url: "/dashboard/partner/walk-in-client",
+    icon: UserSquare,
+  },
+];
+
 type AppSidebarProps = {
   user: SessionUser;
 };
@@ -87,6 +108,8 @@ export function AppSidebar({ user }: AppSidebarProps) {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
+
+  const isPartner = user.role === "partner" || user.role === "admin";
 
   const getInitials = (name: string) =>
     name
@@ -131,27 +154,68 @@ export function AppSidebar({ user }: AppSidebarProps) {
       </SidebarHeader>
 
       <SidebarContent>
-        <SidebarGroup>
-          <SidebarGroupLabel>Navigation</SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              {menuItems.map((item) => (
-                <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton
-                    asChild
-                    isActive={pathname === item.url}
-                    tooltip={item.title}
-                  >
-                    <Link href={item.url}>
-                      <item.icon />
-                      <span>{item.title}</span>
-                    </Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
+        {isPartner ? (
+          <>
+            <SidebarGroup>
+              <SidebarGroupLabel>Partner Dashboard</SidebarGroupLabel>
+              <SidebarGroupContent>
+                <SidebarMenu>
+                  {partnerMenuItems.map((item) => (
+                    <SidebarMenuItem key={item.title}>
+                      <SidebarMenuButton
+                        asChild
+                        isActive={pathname === item.url}
+                        tooltip={item.title}
+                      >
+                        <Link href={item.url}>
+                          <item.icon />
+                          <span>{item.title}</span>
+                        </Link>
+                      </SidebarMenuButton>
+                    </SidebarMenuItem>
+                  ))}
+                </SidebarMenu>
+              </SidebarGroupContent>
+            </SidebarGroup>
+
+            <SidebarGroup>
+              <SidebarGroupContent>
+                <SidebarMenu>
+                  <SidebarMenuItem>
+                    <SidebarMenuButton asChild tooltip="Missions Disponibles">
+                      <Link href="/dashboard/partner/available-missions">
+                        <Package />
+                        <span>Missions Disponibles</span>
+                      </Link>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                </SidebarMenu>
+              </SidebarGroupContent>
+            </SidebarGroup>
+          </>
+        ) : (
+          <SidebarGroup>
+            <SidebarGroupLabel>Navigation</SidebarGroupLabel>
+            <SidebarGroupContent>
+              <SidebarMenu>
+                {menuItems.map((item) => (
+                  <SidebarMenuItem key={item.title}>
+                    <SidebarMenuButton
+                      asChild
+                      isActive={pathname === item.url}
+                      tooltip={item.title}
+                    >
+                      <Link href={item.url}>
+                        <item.icon />
+                        <span>{item.title}</span>
+                      </Link>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                ))}
+              </SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
+        )}
       </SidebarContent>
 
       <SidebarFooter>
