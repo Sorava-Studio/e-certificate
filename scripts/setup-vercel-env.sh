@@ -55,15 +55,15 @@ echo ""
 set_env_var() {
     local key=$1
     local value=$2
-    
+
     if [ -z "$value" ] || [[ $value == *"your-"* ]] || [[ $value == *"xxxxx"* ]]; then
         echo "⏭️  Skipping $key (placeholder value)"
         return
     fi
-    
+
     echo "📝 Setting $key..."
     echo "$value" | vercel env add "$key" $ENV_SCOPE --force 2>/dev/null
-    
+
     if [ $? -eq 0 ]; then
         echo "✅ $key set successfully"
     else
@@ -80,20 +80,20 @@ while IFS= read -r line || [ -n "$line" ]; do
     if [[ $line =~ ^#.*$ ]] || [ -z "$line" ]; then
         continue
     fi
-    
+
     # Skip section headers
     if [[ $line =~ ^[[:space:]]*$ ]]; then
         continue
     fi
-    
+
     # Parse key=value
     if [[ $line =~ ^([^=]+)=(.*)$ ]]; then
         key="${BASH_REMATCH[1]}"
         value="${BASH_REMATCH[2]}"
-        
+
         # Remove quotes if present
         value=$(echo "$value" | sed -e 's/^"//' -e 's/"$//' -e "s/^'//" -e "s/'$//")
-        
+
         set_env_var "$key" "$value"
     fi
 done < .env.vercel

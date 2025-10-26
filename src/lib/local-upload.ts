@@ -143,7 +143,7 @@ export async function uploadImageWithThumbnail(
 
   // Generate filenames
   const fileName = generateFileName(userId, itemId, file.name);
-  const base = fileName.replace(/\.[^.]+$/, '');
+  const base = fileName.replace(/\.[^.]+$/, "");
   const thumbnailFileName = `thumb_${base}.jpg`;
 
   // Generate thumbnail
