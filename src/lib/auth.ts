@@ -49,6 +49,11 @@ export const auth = betterAuth({
       maxAge: SESSION_COOKIE_CACHE_MAX_AGE_SECONDS,
     },
   },
+  advanced: {
+    cookieOptions: {
+      sameSite: "none",
+    },
+  },
   socialProviders: {
     google: {
       clientId: process.env.GOOGLE_CLIENT_ID as string,
