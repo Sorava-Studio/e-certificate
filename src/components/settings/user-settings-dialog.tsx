@@ -198,6 +198,8 @@ export function UserSettingsDialog({
     setIsSaving(false);
 
     if (result.success) {
+      // Refetch session to get updated data
+      await refetchSession();
       router.refresh();
     } else {
       setProfileError(result.message);

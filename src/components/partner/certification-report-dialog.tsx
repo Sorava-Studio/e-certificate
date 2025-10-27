@@ -12,7 +12,7 @@ import {
   TrendingUp,
   Wrench,
 } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import {
   type CertificationReportData,
@@ -120,6 +120,7 @@ export function CertificationReportDialog({
   clientName,
   missionId,
 }: CertificationReportDialogProps) {
+  const formRef = useRef<HTMLFormElement>(null);
   const [open, setOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -129,11 +130,18 @@ export function CertificationReportDialog({
   // Load existing data when dialog opens
   useEffect(() => {
     if (!open) {
+      // Clear existing data and reset form when dialog closes
+      setExistingData({});
+      setActiveSection("general");
+      formRef.current?.reset();
       return;
     }
 
     const loadData = async () => {
       setIsLoading(true);
+      // Clear previous data before loading new data
+      setExistingData({});
+      
       try {
         const result = await getCertificationReport(missionId);
 
@@ -324,6 +332,7 @@ export function CertificationReportDialog({
               </DialogTitle>
             </DialogHeader>
             <form
+              ref={formRef}
               className="flex flex-1 flex-col overflow-hidden"
               onSubmit={handleSubmit}
             >
