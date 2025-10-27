@@ -34,6 +34,23 @@ const SESSION_UPDATE_AGE_SECONDS =
   SECONDS_IN_MINUTE * MINUTES_IN_HOUR * HOURS_IN_DAY; // 1 day
 const SESSION_COOKIE_CACHE_MAX_AGE_SECONDS = COOKIE_CACHE_SECONDS; // 10 seconds
 
+// Get the base URL - handle Vercel's automatic URL
+const getBaseURL = () => {
+  if (process.env.NEXT_PUBLIC_APP_URL && !process.env.NEXT_PUBLIC_APP_URL.includes('$')) {
+    return process.env.NEXT_PUBLIC_APP_URL;
+  }
+  
+  // For Vercel deployments, use VERCEL_URL
+  if (process.env.VERCEL_URL) {
+    return `https://${process.env.VERCEL_URL}`;
+  }
+  
+  // Fallback to localhost for development
+  return "http://localhost:3000";
+};
+
+const baseURL = getBaseURL();
+
 export const auth = betterAuth({
   database: drizzleAdapter(db, {
     provider: "pg", // or "mysql", "sqlite"
@@ -50,20 +67,20 @@ export const auth = betterAuth({
     },
   },
   // Set base URL for proper cookie domain handling
-  baseURL: process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000",
+  baseURL,
   advanced: {
+    // Disable __Secure- prefix in development (requires HTTPS)
+    useSecureCookies: process.env.NODE_ENV === "production",
     cookieAttributes: {
       // Use 'lax' for better compatibility with email links
       // Lax allows cookies to be sent when navigating from external sites (like email)
       sameSite: "lax" as const,
-      // Ensure secure cookies in production
+      // Ensure secure cookies in production only
       secure: process.env.NODE_ENV === "production",
     },
   } as Record<string, unknown>,
   // Allow cross-origin requests by configuring trusted origins
-  trustedOrigins: process.env.NEXT_PUBLIC_APP_URL
-    ? [process.env.NEXT_PUBLIC_APP_URL]
-    : [],
+  trustedOrigins: [baseURL],
   socialProviders: {
     google: {
       clientId: process.env.GOOGLE_CLIENT_ID as string,
