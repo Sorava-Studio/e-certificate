@@ -172,6 +172,7 @@ export function CertificationReportDialog({
     }
 
     // Wait for form to render, then fill it
+    // Re-run when activeSection changes to fill newly rendered inputs
     setTimeout(() => {
       for (const [key, value] of Object.entries(existingData)) {
         const element = document.getElementById(key) as
@@ -189,7 +190,7 @@ export function CertificationReportDialog({
         }
       }
     }, FORM_FILL_DELAY);
-  }, [existingData]);
+  }, [existingData, activeSection]); // Added activeSection dependency
 
   const convertFormDataToReport = (
     formData: FormData
