@@ -184,6 +184,22 @@ export function CertificationReportDialog({
         if (element) {
           if (element.type === "checkbox") {
             (element as HTMLInputElement).checked = value === "true";
+          } else if (element.getAttribute("role") === "combobox") {
+            // This is a shadcn Select component trigger
+            // Find the hidden input or trigger a value change
+            const hiddenInput = document.querySelector(`input[name="${key}"]`) as HTMLInputElement | null;
+            if (hiddenInput) {
+              // Set the value on the hidden input
+              hiddenInput.value = value;
+              // Trigger change event
+              const event = new Event("change", { bubbles: true });
+              hiddenInput.dispatchEvent(event);
+            }
+            // Also update the trigger display
+            const valueSpan = element.querySelector('[data-value]');
+            if (valueSpan) {
+              valueSpan.textContent = value;
+            }
           } else {
             element.value = value;
           }

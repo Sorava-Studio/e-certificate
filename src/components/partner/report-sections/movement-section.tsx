@@ -52,7 +52,7 @@ export function MovementSection() {
         <div className="grid gap-4 sm:grid-cols-2">
           <div className="space-y-2">
             <Label htmlFor="movement_type">Type de mouvement</Label>
-            <Select>
+            <Select name="movement_type">
               <SelectTrigger id="movement_type">
                 <SelectValue placeholder="Sélectionner" />
               </SelectTrigger>
@@ -67,23 +67,24 @@ export function MovementSection() {
 
           <div className="space-y-2">
             <Label htmlFor="caliber_type">Calibre de base</Label>
-            <Input id="caliber_type" placeholder="Ex: ETA 2824-2" />
+            <Input id="caliber_type" name="caliber_type" placeholder="Ex: ETA 2824-2" />
           </div>
 
           <div className="space-y-2">
             <Label htmlFor="caliber_ref">Référence du calibre</Label>
-            <Input id="caliber_ref" placeholder="Ex: 3135" />
+            <Input id="caliber_ref" name="caliber_ref" placeholder="Ex: 3135" />
           </div>
 
           <div className="space-y-2">
             <Label htmlFor="caliber_jewels">Nombre de pierres</Label>
-            <Input id="caliber_jewels" placeholder="Ex: 31 rubis" />
+            <Input id="caliber_jewels" name="caliber_jewels" placeholder="Ex: 31 rubis" />
           </div>
 
           <div className="space-y-2">
             <Label htmlFor="movement_frequence">Fréquence (Hz)</Label>
             <Input
               id="movement_frequence"
+              name="movement_frequence"
               placeholder="Ex: 4 Hz (28800 A/h)"
               type="number"
             />
@@ -95,6 +96,7 @@ export function MovementSection() {
             </Label>
             <Input
               id="movement_power_reserve_factory"
+              name="movement_power_reserve_factory"
               placeholder="Ex: 48"
               type="number"
             />
@@ -106,6 +108,7 @@ export function MovementSection() {
             </Label>
             <Input
               id="caliber_amplitude_factory"
+              name="caliber_amplitude_factory"
               placeholder="Ex: 250-300°"
               type="number"
             />
@@ -117,7 +120,7 @@ export function MovementSection() {
           <div className="grid gap-3 sm:grid-cols-2">
             {MOVEMENT_FUNCTIONS.map((func) => (
               <div className="flex items-center space-x-2" key={func.id}>
-                <Checkbox id={`movement_function_${func.id}`} />
+                <Checkbox id={`movement_function_${func.id}`} name={`movement_function_${func.id}`} />
                 <Label
                   className="cursor-pointer font-normal"
                   htmlFor={`movement_function_${func.id}`}
@@ -136,7 +139,7 @@ export function MovementSection() {
           <div className="grid gap-4 sm:grid-cols-2">
             <div className="space-y-2">
               <Label htmlFor="caliber_factory">Calibre d'origine ?</Label>
-              <Select>
+              <Select name="caliber_factory">
                 <SelectTrigger id="caliber_factory">
                   <SelectValue placeholder="Sélectionner" />
                 </SelectTrigger>
@@ -152,6 +155,7 @@ export function MovementSection() {
               <Label htmlFor="caliber_custom">Calibre personnalisé ?</Label>
               <Input
                 id="caliber_custom"
+                name="caliber_custom"
                 placeholder="Description personnalisation"
               />
             </div>
@@ -163,7 +167,7 @@ export function MovementSection() {
           <div className="grid gap-4 sm:grid-cols-2">
             <div className="space-y-2">
               <Label htmlFor="caliber_change">Calibre remplacé ?</Label>
-              <Select>
+              <Select name="caliber_change">
                 <SelectTrigger id="caliber_change">
                   <SelectValue placeholder="Sélectionner" />
                 </SelectTrigger>
@@ -177,7 +181,7 @@ export function MovementSection() {
 
             <div className="space-y-2">
               <Label htmlFor="caliber_change_date">Date du remplacement</Label>
-              <Input id="caliber_change_date" placeholder="Si disponible" />
+              <Input id="caliber_change_date" name="caliber_change_date" placeholder="Si disponible" />
             </div>
           </div>
 
@@ -188,6 +192,7 @@ export function MovementSection() {
             <Textarea
               className="min-h-[80px]"
               id="caliber_change_details"
+              name="caliber_change_details"
               placeholder="Description du changement..."
             />
           </div>
@@ -198,6 +203,7 @@ export function MovementSection() {
               <Input
                 className="flex-1"
                 id="caliber_change_proof"
+                name="caliber_change_proof"
                 placeholder="Aucun fichier"
                 readOnly
               />
@@ -213,7 +219,7 @@ export function MovementSection() {
           <div className="grid gap-3 sm:grid-cols-2">
             {MOVEMENT_PARTS.map((part) => (
               <div className="flex items-center space-x-2" key={part.id}>
-                <Checkbox id={`movement_part_${part.id}`} />
+                <Checkbox id={`movement_part_${part.id}`} name={`movement_part_${part.id}`} />
                 <Label
                   className="cursor-pointer font-normal"
                   htmlFor={`movement_part_${part.id}`}
@@ -230,13 +236,14 @@ export function MovementSection() {
           <div className="grid gap-4 sm:grid-cols-3">
             <div className="space-y-2">
               <Label htmlFor="movement_score">Score du mouvement</Label>
-              <Input id="movement_score" placeholder="0-10" type="number" />
+              <Input id="movement_score" name="movement_score" placeholder="0-10" type="number" />
             </div>
 
             <div className="space-y-2">
               <Label htmlFor="movement_score_precision">Score précision</Label>
               <Input
                 id="movement_score_precision"
+                name="movement_score_precision"
                 placeholder="0-10"
                 type="number"
               />
@@ -246,6 +253,7 @@ export function MovementSection() {
               <Label htmlFor="movement_score_global">Score global</Label>
               <Input
                 id="movement_score_global"
+                name="movement_score_global"
                 placeholder="0-10"
                 type="number"
               />
@@ -259,6 +267,7 @@ export function MovementSection() {
             <Textarea
               className="min-h-[120px]"
               id="movement_comment"
+              name="movement_comment"
               placeholder="Analyse du mouvement, état général, révisions effectuées..."
             />
           </div>
